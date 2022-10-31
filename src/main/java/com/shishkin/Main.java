@@ -1,20 +1,16 @@
 package com.shishkin;
 
-import com.shishkin.config.Config;
+import com.shishkin.models.Cluster;
+import com.shishkin.models.Transaction;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Running...");
-        System.out.println(Main.start(args));
-    }
-
-    private static String start(String[] args) {
-        try {
-            Config config = new Config(args);
-            System.out.println(config);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "completed successfully!";
+        Transaction transaction = new Transaction("a", "b");
+        Cluster cluster = new Cluster(transaction);
+        cluster.getTransactions().add(new Transaction("a", "b", "c"));
+        cluster.getTransactions().add(new Transaction("a", "c", "d"));
+        cluster.getClustersChart().forEach((k, v) -> System.out.println(k + ":" + v));
+        System.out.println(cluster.getHeight());
     }
 }

@@ -9,7 +9,7 @@ public class Config {
     String outputFile;
     double repulsion;
 
-    public Config(String[] args) throws NumberFormatException, NullPointerException, InvalidCountArgsException {
+    public Config(String[] args) throws NumberFormatException, InvalidCountArgsException {
         checkCountArgs(args);
         this.inputFile = args[0];
         this.outputFile = args[1];
@@ -20,7 +20,7 @@ public class Config {
         if (args.length != 3) throw new InvalidCountArgsException(Errors.INVALID_COUNT_CONFIG_ARGS.getMessage());
     }
 
-    private double getRepulsion(String value) throws NumberFormatException, NullPointerException {
+    private double getRepulsion(String value) throws NumberFormatException{
         double result;
         try {
             result = Double.parseDouble(value);

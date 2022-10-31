@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -13,5 +14,9 @@ public class Transaction {
 
     public Transaction(String... items) {
         this.items.addAll(List.of(items));
+    }
+
+    public Transaction(List<String> items) {
+        this.items.addAll(items);
     }
 }

@@ -24,6 +24,22 @@ public class Cluster {
         return getAreaChart() / (double) getClustersChart().size();
     }
 
+    public int getWidth() {
+        return getClustersChart().size();
+    }
+
+    public void add(Transaction transaction) {
+        transactions.add(transaction);
+    }
+
+    public void remove(Transaction transaction) {
+        transactions.remove(transaction);
+    }
+
+    public int size() {
+        return transactions.size();
+    }
+
     public int getAreaChart() {
         return getClustersChart().values().stream().mapToInt(Integer::valueOf).sum();
     }
@@ -34,8 +50,10 @@ public class Cluster {
                 Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));
     }
 
+
     private Stream<String> getAllTransactionsItems() {
         return transactions.stream().map(Transaction::getItems).flatMap(Collection::stream);
     }
+
 
 }

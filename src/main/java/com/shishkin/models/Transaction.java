@@ -15,6 +15,21 @@ public class Transaction {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (!(other instanceof Transaction))
+            return false;
+        Transaction fc = (Transaction) other;
+        return items.equals(fc.getItems());
+    }
+
+    @Override
+    public int hashCode() {
+        return items.hashCode ();
+    }
+
+    @Override
     public String toString() {
         return items.toString();
     }

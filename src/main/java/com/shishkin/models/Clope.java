@@ -1,11 +1,13 @@
 package com.shishkin.models;
 
+import lombok.Getter;
 import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class Clope {
     private final List<Cluster> clusters = new ArrayList<>();
 

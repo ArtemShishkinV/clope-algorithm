@@ -2,6 +2,7 @@ package com.shishkin.io;
 
 import com.shishkin.models.Transaction;
 import com.shishkin.utils.FileIOUtils;
+import com.shishkin.utils.ReaderUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -30,15 +31,15 @@ public class FileReader implements Reader {
         return transactions.stream().map(Transaction::new).collect(Collectors.toList());
     }
 
-    private List<String> getItemsFromLine(String line) {
-        return Arrays.asList(line.split(","));
-    }
+
 
     private List<List<String>> getTransactionStrings(File file) throws FileNotFoundException {
         List<List<String>> items = new ArrayList<>();
         try (Scanner myReader = new Scanner(file)) {
             while (myReader.hasNextLine()) {
-                items.add(getItemsFromLine(myReader.nextLine()));
+                items.add(ReaderUtils.getItemsFromLine(
+                        myReader.nextLine(),
+                        DELIMITER_ITEMS_IN_TRANSACTION_LINE));
             }
         }
         return items;

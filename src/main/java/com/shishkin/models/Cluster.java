@@ -1,7 +1,6 @@
 package com.shishkin.models;
 
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
-@ToString
 public class Cluster {
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -55,5 +53,13 @@ public class Cluster {
         return transactions.stream().map(Transaction::getItems).flatMap(Collection::stream);
     }
 
-
+    @Override
+    public String toString() {
+        return "Transactions:" + getTransactions() + "\n" +
+                this.getClustersChart().entrySet().stream()
+                        .map(k -> (k.getKey() + ": " + k.getValue()))
+                        .collect(Collectors.joining("\n")) + "\n\n" +
+                "H: " + Math.round(getHeight() * 100.0) / 100.0 + "\t" +
+                "W: " + getWidth() + "\n";
+    }
 }

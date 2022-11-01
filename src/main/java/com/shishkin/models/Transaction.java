@@ -1,22 +1,21 @@
 package com.shishkin.models;
 
 import lombok.Getter;
-import lombok.ToString;
+import lombok.Value;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-@Getter
-@ToString
+@Value
 public class Transaction {
-    private final List<String> items = new ArrayList<>();
-
-    public Transaction(String... items) {
-        this.items.addAll(List.of(items));
-    }
+    List<String> items = new ArrayList<>();
 
     public Transaction(List<String> items) {
         this.items.addAll(items);
+    }
+
+    @Override
+    public String toString() {
+        return items.toString();
     }
 }

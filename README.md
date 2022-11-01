@@ -1,4 +1,4 @@
-#java-clope
+# java-clope
 
 java implementation of CLOPE clustering algorithm with IO interfaces.
 

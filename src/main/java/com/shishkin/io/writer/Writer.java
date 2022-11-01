@@ -1,6 +1,6 @@
-package com.shishkin.io;
+package com.shishkin.io.writer;
 
-import com.shishkin.models.Cluster;
+import com.shishkin.app.models.Cluster;
 
 import java.util.List;
 

@@ -1,5 +1,8 @@
 package com.shishkin.models;
 
+import com.shishkin.app.models.Clope;
+import com.shishkin.app.models.Cluster;
+import com.shishkin.app.models.Transaction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;

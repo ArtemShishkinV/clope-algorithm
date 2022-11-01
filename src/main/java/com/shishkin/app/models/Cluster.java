@@ -1,7 +1,6 @@
-package com.shishkin.models;
+package com.shishkin.app.models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,9 +10,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
+@Value
 public class Cluster {
-    private final List<Transaction> transactions = new ArrayList<>();
+    List<Transaction> transactions = new ArrayList<>();
 
     public Cluster(Transaction transaction) {
         this.transactions.add(transaction);
@@ -56,21 +55,6 @@ public class Cluster {
 
     private Stream<String> getAllTransactionsItems() {
         return transactions.stream().map(Transaction::getItems).flatMap(Collection::stream);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        if (!(other instanceof Cluster))
-            return false;
-        Cluster fc = (Cluster) other;
-        return transactions.equals(fc.getTransactions());
-    }
-
-    @Override
-    public int hashCode() {
-        return transactions.hashCode ();
     }
 
     @Override

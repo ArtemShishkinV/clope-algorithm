@@ -1,8 +1,8 @@
-package com.shishkin.io;
+package com.shishkin.io.reader;
 
-import com.shishkin.models.Transaction;
-import com.shishkin.utils.FileIOUtils;
-import com.shishkin.utils.ReaderUtils;
+import com.shishkin.app.models.Transaction;
+import com.shishkin.io.utils.FileIOUtils;
+import com.shishkin.io.utils.ReaderUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;

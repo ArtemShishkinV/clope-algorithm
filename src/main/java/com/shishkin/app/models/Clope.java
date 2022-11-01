@@ -1,4 +1,4 @@
-package com.shishkin.models;
+package com.shishkin.app.models;
 
 import lombok.Getter;
 import lombok.Value;

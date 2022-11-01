@@ -1,5 +1,8 @@
 package com.shishkin.models;
 
+import com.shishkin.app.models.Clope;
+import com.shishkin.app.models.Cluster;
+import com.shishkin.app.models.Transaction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,7 +26,7 @@ class ClopeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {1.1, 2.0, 3.0})
+    @ValueSource(doubles = {1.0, 2.0, 3.0})
     void testClustering(double repulsion) {
         Clope clope = new Clope();
 

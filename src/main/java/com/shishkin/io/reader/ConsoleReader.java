@@ -1,7 +1,7 @@
-package com.shishkin.io;
+package com.shishkin.io.reader;
 
-import com.shishkin.models.Transaction;
-import com.shishkin.utils.ReaderUtils;
+import com.shishkin.app.models.Transaction;
+import com.shishkin.io.utils.ReaderUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

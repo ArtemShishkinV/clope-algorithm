@@ -1,6 +1,6 @@
-package com.shishkin.io;
+package com.shishkin.io.reader;
 
-import com.shishkin.models.Transaction;
+import com.shishkin.app.models.Transaction;
 
 import java.io.IOException;
 import java.util.List;

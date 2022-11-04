@@ -1,6 +1,6 @@
 package com.shishkin.app.models;
 
-import lombok.Value;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,9 +10,22 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Value
+@Data
 public class Cluster {
+    private int id;
+    private int width;
+    private int area;
+    private Map<String, Integer> chart;
+
+
     List<Transaction> transactions = new ArrayList<>();
+
+    public Cluster(int id, Transaction transaction) {
+        this.id = id;
+        this.area = transaction.getItems().size();
+        this.chart = getClustersChart();
+        this.width = this.chart.keySet().size();
+    }
 
     public Cluster(Transaction transaction) {
         this.transactions.add(transaction);
@@ -46,7 +59,7 @@ public class Cluster {
         return getClustersChart().values().stream().mapToInt(Integer::valueOf).sum();
     }
 
-    public Map<String, Integer> getClustersChart() {
+    private Map<String, Integer> getClustersChart() {
         return getAllTransactionsItems().collect(Collectors.groupingBy(
                 Function.identity(),
                 Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));

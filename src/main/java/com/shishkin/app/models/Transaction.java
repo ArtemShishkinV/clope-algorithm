@@ -1,16 +1,19 @@
 package com.shishkin.app.models;
 
-import lombok.Getter;
-import lombok.Value;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Value
+@Data
 public class Transaction {
-    List<String> items = new ArrayList<>();
+    private int clusterPosition;
+    private int clusterId;
+    private List<String> items = new ArrayList<>();
 
     public Transaction(List<String> items) {
+        this.clusterPosition = 0;
+        this.clusterId = 0;
         this.items.addAll(items);
     }
 

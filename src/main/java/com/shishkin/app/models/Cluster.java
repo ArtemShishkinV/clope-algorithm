@@ -1,10 +1,10 @@
 package com.shishkin.app.models;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Data
+@EqualsAndHashCode(exclude = {"id"})
 public class Cluster {
     private int id;
     private int width;
     private int area;
-    private Map<String, Integer> chart = new HashMap<>();
-
+    private Map<String, Integer> chart;
 
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -26,16 +26,8 @@ public class Cluster {
         this.transactions.add(transaction);
         this.area = transaction.getItems().size();
         this.chart = getClustersChart();
-        this.width = this.area;
+        this.width = this.chart.size();
         transaction.setClusterId(id);
-    }
-
-    public Cluster(Transaction transaction) {
-        this.transactions.add(transaction);
-    }
-
-    public Cluster(Transaction... transactions) {
-        this.transactions.addAll(List.of(transactions));
     }
 
     public void add(Transaction transaction) {
@@ -86,6 +78,7 @@ public class Cluster {
     private Stream<String> getAllTransactionsItems() {
         return transactions.stream().map(Transaction::getItems).flatMap(Collection::stream);
     }
+
 
     @Override
     public String toString() {

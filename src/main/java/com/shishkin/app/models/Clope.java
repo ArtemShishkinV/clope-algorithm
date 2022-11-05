@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class Clope {
     }
 
     private void initialization(List<Transaction> transactions, double repulsion) {
-        transactions.forEach(item -> putToMaxProfitCluster(item, repulsion));
+        transactions.forEach(item -> putToMaxProfitCluster(item, repulsion, false));
     }
 
     private void iterable(List<Transaction> transactions, double repulsion) {
@@ -42,41 +43,42 @@ public class Clope {
 
         for (Transaction transaction : transactions) {
             oldClusterId = transaction.getClusterId();
-            if (oldClusterId == -1) {
-                continue;
-            }
             this.clusters.get(oldClusterId).remove(transaction);
-            putToMaxProfitCluster(transaction, repulsion);
+            putToMaxProfitCluster(transaction, repulsion, true);
             if (oldClusterId != transaction.getClusterId()) result = true;
         }
 
         return result;
     }
 
-    private void putToMaxProfitCluster(Transaction transaction, double repulsion) {
-        int temp = transaction.getItems().size();
+    private void putToMaxProfitCluster(Transaction transaction, double repulsion, boolean isRemove) {
+        int newArea = transaction.getItems().size();
+        int newWidth = new HashSet<>(transaction.getItems()).size();
+        boolean isFirst = true;
 
         double bestDeltaProfit = 0;
         Cluster bestProfitCluster = null;
-        double maxProfit = temp / Math.pow(temp, repulsion);
+        double maxProfit = newArea / Math.pow(newWidth, repulsion);
 
         for (Cluster cluster : this.clusters) {
             double delta = getDeltaProfit(cluster, transaction, repulsion);
-            if (delta > bestDeltaProfit) {
+            if (isFirst || delta > bestDeltaProfit) {
                 if (delta > maxProfit) {
                     cluster.add(transaction);
                     return;
                 }
                 bestDeltaProfit = delta;
                 bestProfitCluster = cluster;
+                isFirst = false;
             }
         }
 
-        changeClusters(maxProfit, bestDeltaProfit, bestProfitCluster, transaction);
+        changeClusters(maxProfit, bestDeltaProfit, bestProfitCluster, transaction, isRemove);
     }
 
-    private void changeClusters(double maxProfit, double deltaProfit, Cluster cluster, Transaction transaction) {
-        if (deltaProfit >= maxProfit && cluster != null) {
+    private void changeClusters(double maxProfit, double deltaProfit,
+                                Cluster cluster, Transaction transaction, boolean isRemove) {
+        if ((deltaProfit >= maxProfit || deltaProfit > 0 && isRemove) && cluster != null) {
             cluster.add(transaction);
         } else {
             this.clusters.add(new Cluster(this.clusters.size(), transaction));

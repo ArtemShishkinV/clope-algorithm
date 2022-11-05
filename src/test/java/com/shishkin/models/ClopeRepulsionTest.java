@@ -25,12 +25,14 @@ class ClopeRepulsionTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {1.0, 2.0})
-    void testRepulsionClustering(double repulsion) {
+    @ValueSource(doubles = {1.0, 2.1})
+    void testRepulsionClustering(double repulsion) throws InterruptedException {
         Clope clope = new Clope();
 
         List<Cluster> expected = results.get(repulsion);
         List<Cluster> actual = clope.clustering(transactions, repulsion);
+        System.out.println(expected);
+        System.out.println(actual);
 
         Assertions.assertEquals(expected, actual);
     }
@@ -46,14 +48,13 @@ class ClopeRepulsionTest {
 
     private static Map<Double, List<Cluster>> getResultsDifferentRepulsion(List<Transaction> transactions) {
         Map<Double, List<Cluster>> map = new HashMap<>();
-        map.put(1.0, new ArrayList<>(List.of(
-                new Cluster(transactions.get(0), transactions.get(1))
-        )));
+        Cluster cluster = new Cluster(0, transactions.get(0));
+        cluster.add(transactions.get(1));
+        map.put(1.0, List.of(cluster));
 
-        map.put(2.0, new ArrayList<>(List.of(
-                new Cluster(transactions.get(0)),
-                new Cluster(transactions.get(1))
-        )));
+        Cluster cluster1 = new Cluster(0, transactions.get(0));
+        Cluster cluster2 = new Cluster(1, transactions.get(1));
+        map.put(2.1, List.of(cluster1, cluster2));
 
         return map;
     }

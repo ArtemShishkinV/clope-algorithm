@@ -1,86 +1,112 @@
 package com.shishkin.app.models;
 
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
+@Value
+@NoArgsConstructor
 public class Clope {
-    private final List<Cluster> clusters = new ArrayList<>();
-
-    @Value
-    private static class ProfitPosition {
-        double value;
-        int position;
-    }
+    List<Cluster> clusters = new ArrayList<>();
 
     public List<Cluster> clustering(List<Transaction> transactions, double repulsion) {
-        transactions.forEach(transaction -> {
-            if (!clusters.isEmpty()) {
-                double profitNewCluster = getProfitWithNewCluster(transaction, repulsion);
-                ProfitPosition profitCurrentClusters = getMaxProfitWithCurrentClusters(transaction, repulsion);
-                addTransactionInClusterByMaxProfit(transaction, profitNewCluster, profitCurrentClusters);
-            } else {
-                clusters.add(new Cluster(transaction));
+        initialization(transactions, repulsion);
+        iterable(transactions, repulsion);
+
+        return clearClusters();
+    }
+
+    private void initialization(List<Transaction> transactions, double repulsion) {
+        transactions.forEach(item -> putToMaxProfitCluster(item, repulsion));
+    }
+
+    private void iterable(List<Transaction> transactions, double repulsion) {
+        boolean moved = true;
+        while (moved) {
+            moved = shuffle(transactions, repulsion);
+        }
+    }
+
+    private List<Cluster> clearClusters() {
+        return clusters.stream()
+                .filter((cluster -> !(cluster.getTransactions().isEmpty())))
+                .collect(Collectors.toList());
+    }
+
+    private boolean shuffle(List<Transaction> transactions, double repulsion) {
+        int oldClusterId;
+        boolean result = false;
+
+        for (Transaction transaction : transactions) {
+            oldClusterId = transaction.getClusterId();
+            if (oldClusterId == -1) {
+                continue;
             }
-        });
-        return clusters;
-    }
-
-    private void addTransactionInClusterByMaxProfit(Transaction transaction,
-                                                    double profitNew,
-                                                    ProfitPosition profitPosition) {
-        if (profitNew > profitPosition.value) {
-            clusters.add(new Cluster(transaction));
-        } else {
-            clusters.get(profitPosition.getPosition()).add(transaction);
+            this.clusters.get(oldClusterId).remove(transaction);
+            putToMaxProfitCluster(transaction, repulsion);
+            if (oldClusterId != transaction.getClusterId()) result = true;
         }
+
+        return result;
     }
 
-    private double getProfitWithNewCluster(Transaction transaction, double repulsion) {
-        Cluster clusterNew = new Cluster(transaction);
-        clusters.add(clusterNew);
-        double profit = getProfit(clusters, repulsion);
-        clusters.remove(clusterNew);
-        return profit;
+    private void putToMaxProfitCluster(Transaction transaction, double repulsion) {
+        int temp = transaction.getItems().size();
+
+        double bestDeltaProfit = 0;
+        Cluster bestProfitCluster = null;
+        double maxProfit = temp / Math.pow(temp, repulsion);
+
+        for (Cluster cluster : this.clusters) {
+            double delta = getDeltaProfit(cluster, transaction, repulsion);
+            if (delta > bestDeltaProfit) {
+                if (delta > maxProfit) {
+                    cluster.add(transaction);
+                    return;
+                }
+                bestDeltaProfit = delta;
+                bestProfitCluster = cluster;
+            }
+        }
+
+        changeClusters(maxProfit, bestDeltaProfit, bestProfitCluster, transaction);
     }
 
-    private ProfitPosition getMaxProfitWithCurrentClusters(Transaction transaction, double repulsion) {
-        List<Double> profits = new ArrayList<>();
-        this.clusters.forEach(cluster -> {
+    private void changeClusters(double maxProfit, double deltaProfit, Cluster cluster, Transaction transaction) {
+        if (deltaProfit >= maxProfit && cluster != null) {
             cluster.add(transaction);
-            profits.add(getProfit(clusters, repulsion));
-            cluster.remove(transaction);
-        });
-        double max = Collections.max(profits);
-        return new ProfitPosition(max, profits.indexOf(max));
+        } else {
+            this.clusters.add(new Cluster(this.clusters.size(), transaction));
+        }
     }
 
-    private double getProfit(List<Cluster> clusters, double repulsion) {
-        double profitNumerator = 0;
-        double profitDenominator = 0;
+    private double getDeltaProfit(Cluster cluster, Transaction transaction, double repulsion) {
+        int area = cluster.getArea() + transaction.getItems().size();
+        int width = getNewWidth(cluster, transaction);
 
-        for (Cluster cluster :
-                clusters) {
-            profitNumerator += calculateNumeratorProfit(cluster, repulsion);
-            profitDenominator += cluster.size();
+        double deltaProfit = area / Math.pow(width, repulsion);
+
+        if (!cluster.getTransactions().isEmpty()) {
+            int countTransactions = cluster.getTransactions().size();
+            double profit = calculateProfit(cluster.getArea(),
+                    cluster.getWidth(), countTransactions, repulsion);
+            double profitNew = calculateProfit(area, width, countTransactions + 1, repulsion);
+            return profitNew - profit;
         }
 
-        return getResultProfit(profitNumerator, profitDenominator);
+        return deltaProfit;
     }
 
-    private double calculateNumeratorProfit(Cluster cluster, double repulsion) {
-        return cluster.getAreaChart() / Math.pow(cluster.getWidth(), repulsion) * cluster.size();
+    private double calculateProfit(int s, int w, int c, double repulsion) {
+        return s * c / Math.pow(w, repulsion);
     }
 
-    private double getResultProfit(double numerator, double denominator) {
-        if (denominator == 0.0) {
-            return 0.0;
-        }
-        return numerator / denominator;
+    private int getNewWidth(Cluster cluster, Transaction transaction) {
+        return cluster.getWidth() + (int) transaction.getItems().stream()
+                .filter(item -> !(cluster.getChart().containsKey(item)))
+                .count();
     }
-
 }

@@ -1,9 +1,9 @@
 package com.shishkin;
 
-import com.shishkin.config.ConfigFactory;
-import com.shishkin.errors.InvalidCountConfigArgsException;
-import com.shishkin.config.models.Config;
 import com.shishkin.app.handler.ClopeAlgorithmHandler;
+import com.shishkin.config.ConfigFactory;
+import com.shishkin.config.models.Config;
+import com.shishkin.errors.InvalidCountConfigArgsException;
 
 import java.io.IOException;
 
